@@ -601,18 +601,22 @@ describe("bulk/batch item operations", function () {
       const { resource: db } = await client.databases.create({
         id: `small db ${Math.random() * 1000}`,
       });
-      const containerResponse = await client
-        .database(db.id)
-        .containers.create({ id: `small container ${Math.random() * 1000}`, throughput: 400 });
-      const container = containerResponse.container;
-      await container.items.create({ id: "readme" });
-      const arr = new Array(400);
-      const promises = [];
-      for (let i = 0; i < arr.length; i++) {
-        promises.push(container.item("readme").read());
+      try {
+        const containerResponse = await client
+          .database(db.id)
+          .containers.create({ id: `small container ${Math.random() * 1000}`, throughput: 400 });
+        const container = containerResponse.container;
+        await container.items.create({ id: "readme" });
+        const arr = new Array(400);
+        const promises = [];
+        for (let i = 0; i < arr.length; i++) {
+          promises.push(container.item("readme").read());
+        }
+        const resp = await Promise.all(promises);
+        assert.equal(resp[0].statusCode, 200);
+      } catch (e: any) {
+        assert.fail(e);
       }
-      const resp = await Promise.all(promises);
-      assert.equal(resp[0].statusCode, 200);
     });
   });
 

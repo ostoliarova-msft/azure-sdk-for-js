@@ -94,21 +94,17 @@ describe("Integrated Cache Staleness", async function (this: Suite) {
                     dedicatedGatewayMaxAge
                   );
                 } else {
-                  assert(
+                  assert.strictEqual(
                     context.headers["x-ms-dedicatedgateway-max-age"],
                     "x-ms-dedicatedgateway-max-age is not set."
                   );
                   assert.ifError(context.headers["x-ms-dedicatedgateway-max-age"]);
                 }
               } else {
-                assert(
-                  context.headers["x-ms-dedicatedgateway-max-age"],
-                  "Attempt to use x-ms-dedicatedgateway-max-age on a non-item request."
-                );
-                assert.ifError(context.headers["x-ms-dedicatedgateway-max-age"]);
+                assert.fail("Attempt to use x-ms-dedicatedgateway-max-age on a non-item request.");
               }
             } else {
-              assert(
+              assert.strictEqual(
                 context.headers["x-ms-consistency-level"],
                 "x-ms-consistency-level is not set."
               );
